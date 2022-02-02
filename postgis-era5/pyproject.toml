@@ -10,6 +10,8 @@ pandas = "^1.4.0"
 geopandas = "^0.10.2"
 Shapely = "^1.8.0"
 SQLAlchemy = "^1.4.31"
+GeoAlchemy2 = "^0.10.2"
+psycopg2-binary = "^2.9.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
