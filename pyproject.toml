@@ -5,7 +5,7 @@ description = ""
 authors = ["Jeffrey Tsang <jtsang93@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 pandas = "^1.4.0"
 geopandas = "^0.10.2"
 Shapely = "^1.8.0"
