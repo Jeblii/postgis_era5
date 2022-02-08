@@ -10,10 +10,10 @@ import os
 
 def main():
     def apply_transformation(era5_df: pd.DataFrame()) -> pd.DataFrame():
-        era5_df["d2m"] = era5_df.d2m - 273.15  # K to celcius
-        era5_df["t2m"] = era5_df.t2m - 273.15  # K to celcius
-        era5_df["pev"] = era5_df["pev"] * 1000
-        era5_df["tp"] = era5_df["tp"] * 1000
+        era5_df.loc[:, era5_df.columns.str.contains('d2m')] -= 273.15
+        era5_df.loc[:, era5_df.columns.str.contains('t2m')] -= 273.15
+        era5_df.loc[:, era5_df.columns.str.contains('pev')] *= 1000
+        era5_df.loc[:, era5_df.columns.str.contains('tp')] *= 1000
         return era5_df
 
     # Creating SQLAlchemy's engine to use
@@ -28,13 +28,20 @@ def main():
     for file in nc_files:
         print(file)
         ds = xr.open_dataset(
-            f"/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/sicredi/{ile}"
+            f"/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/sicredi/{file}"
         )
         df = ds.to_dataframe()
         df.dropna(inplace=True)
 
-        # df = apply_transformation(df)
-        reset_index_df = df.reset_index()
+        # resample to daily values
+        agg_df = df.groupby([pd.Grouper(level='latitude'), 
+                    pd.Grouper(level='longitude'), 
+                    pd.Grouper(level='time', freq='D')]
+                ).agg(['min','max','mean'])
+        agg_df.columns = ['_'.join(col) for col in agg_df.columns]
+
+        agg_df = apply_transformation(agg_df)
+        reset_index_df = agg_df.reset_index()
         geom = [
             Point(x, y)
             for x, y in zip(reset_index_df["longitude"], reset_index_df["latitude"])
