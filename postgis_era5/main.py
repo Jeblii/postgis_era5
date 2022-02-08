@@ -6,7 +6,7 @@ import psycopg2
 import xarray as xr
 import netCDF4 as nc
 from shapely.geometry import Point
-
+import os
 
 def main():
     def apply_transformation(era5_df: pd.DataFrame()) -> pd.DataFrame():
@@ -19,24 +19,32 @@ def main():
     # Creating SQLAlchemy's engine to use
     engine = create_engine("postgresql://localhost/era5")
 
-    ds = xr.open_dataset(
-        "/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/sicredi/era5_2011.nc"
-    )
-    df = ds.to_dataframe()
-    df.dropna(inplace=True)
+    nc_files = []
+    for _, _, files in os.walk("/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/sicredi/"):
+        for name in files:
+            if name.endswith((".nc")):
+                nc_files.append(name)
 
-    # df = apply_transformation(df)
-    reset_index_df = df.reset_index()
-    geom = [
-        Point(x, y)
-        for x, y in zip(reset_index_df["longitude"], reset_index_df["latitude"])
-    ]
-    gdf = gpd.GeoDataFrame(reset_index_df, geometry=geom)
-    gdf.drop(columns=["latitude", "longitude"], inplace=True)
-    gdf = gdf.set_crs("epsg:4326")
-    print(gdf.head(), gdf.crs, gdf.dtypes)
+    for file in nc_files:
+        print(file)
+        ds = xr.open_dataset(
+            f"/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/sicredi/{ile}"
+        )
+        df = ds.to_dataframe()
+        df.dropna(inplace=True)
 
-    gdf.to_postgis(name="era5", con=engine, if_exists='append')
+        # df = apply_transformation(df)
+        reset_index_df = df.reset_index()
+        geom = [
+            Point(x, y)
+            for x, y in zip(reset_index_df["longitude"], reset_index_df["latitude"])
+        ]
+        gdf = gpd.GeoDataFrame(reset_index_df, geometry=geom)
+        gdf.drop(columns=["latitude", "longitude"], inplace=True)
+        gdf = gdf.set_crs("epsg:4326")
+        print(gdf.head(), gdf.crs, gdf.dtypes)
+
+        gdf.to_postgis(name="era5", con=engine, if_exists='append')
 
 
 if __name__ == "__main__":
