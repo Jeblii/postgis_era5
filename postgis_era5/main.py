@@ -15,7 +15,7 @@ def main():
         era5_df['tp'] = era5_df['tp'] * 1000
         return era5_df
 
-    ds = xr.open_dataset('/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/download.nc')
+    ds = xr.open_dataset('/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/yearly.nc')
     df = ds.to_dataframe()
     df.dropna(inplace=True)
 
