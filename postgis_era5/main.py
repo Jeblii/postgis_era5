@@ -1,12 +1,13 @@
-from geoalchemy2 import Geometry, WKTElement
-from sqlalchemy import *
-import pandas as pd
+import os
+
 import geopandas as gpd
+import netCDF4 as nc
+import pandas as pd
 import psycopg2
 import xarray as xr
-import netCDF4 as nc
+from geoalchemy2 import Geometry, WKTElement
 from shapely.geometry import Point
-import os
+from sqlalchemy import *
 
 
 def main():
