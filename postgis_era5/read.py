@@ -31,32 +31,36 @@ class PSQLInterface:
                 )
 
     def get_closest_point(self, location: WGS84Point):
+        # TODO(Jeffrey Tsang) this only works for point. Not yet tested for other types of geometry for behaviour. See also https://postgis.net/workshops/postgis-intro/knn.html
         wkt_text = f"SRID=4326;POINT({location.longitude} {location.latitude})"
         query = text(
             """
-                SELECT ST_AsText(geometry) FROM era5
+                SELECT ST_AsText(geometry), t2m_min FROM era5
                 WHERE EXTRACT(MONTH FROM time) = 5 
-                ORDER BY geometry <-> ST_GeomFromText(:wkt)
+                ORDER BY geometry::geometry <-> ST_GeomFromText(:wkt)::geometry
                 LIMIT 1;
                 """
         )
         with self.engine.connect() as conn:
             res = conn.execute(query, wkt=wkt_text).fetchall()
-        return res
+        return res[0]['st_astext']
 
     def retrieve_norm(
-        self, var: str, month: int, location: WGS84Point, time_period: int = 10
+        self, var: str, month: int, location: WGS84Point, year_range: int = 10
     ):
+        closest_point = self.get_closest_point(location=location)
         query = text(
             """
-            SELECT :x FROM era5 WHERE EXTRACT(MONTH FROM time) = :y;
+            SELECT :var FROM era5 
+            WHERE EXTRACT(MONTH FROM time) = :month
             """
+            #AND ST_DWithin(geometry, 'SRID=3857;:z', 0);
         )
         query = query.bindparams(
-            bindparam("x", type_=sqlalchemy.String),
+            bindparam("var", type_=sqlalchemy.String),
         )
         with self.engine.connect() as conn:
-            res = conn.execute(query, x=var, y=month).fetchall()
+            res = conn.execute(query, var=var, month=month, z=closest_point).fetchall()
         return res
 
     def retrieve_historical_month_year(
@@ -74,10 +78,10 @@ class PSQLInterface:
 
 db = PSQLInterface(db_connection)
 db.check_connection()
-res = db.get_closest_point(WGS84Point(latitude=-22.804, longitude=-54.383))
-print(res)
-# res = db.retrieve_norm(var='t2m_min', month=5)
+# res = db.get_closest_point(WGS84Point(latitude=-22.804, longitude=-54.383))
 # print(res)
+res = db.retrieve_norm(var='t2m_min', month=5, location=WGS84Point(latitude=-22.804, longitude=-54.383))
+print(res)
 # res = db.retrieve_historical_month_year(var='t2m_min', month=5, year=2020)
 # print(res)
 
