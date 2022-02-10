@@ -1,46 +1,45 @@
 from geoalchemy2 import Geometry
-from sqlalchemy import Column, DateTime, Float, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, DateTime, Float, MetaData, Table
 
-Base = declarative_base()
-
-class Era5(Base):
-    __tablename__ = 'era5'
-    time = Column(DateTime)
-    u10_min = Column(Float)
-    u10_max = Column(Float)
-    u10_mean = Column(Float)
-    v10_min = Column(Float)
-    v10_max = Column(Float)
-    v10_mean = Column(Float)
-    d2m_min = Column(Float)
-    d2m_max = Column(Float)
-    d2m_mean = Column(Float)
-    t2m_min = Column(Float)
-    t2m_max = Column(Float)
-    t2m_mean = Column(Float)
-    lai_hv_min = Column(Float)
-    lai_hv_max = Column(Float)
-    lai_hv_mean = Column(Float)
-    pev_min = Column(Float)
-    pev_max = Column(Float)
-    pev_mean = Column(Float)
-    slhf_min = Column(Float)
-    slhf_max = Column(Float)
-    slhf_mean = Column(Float)
-    ssr_min = Column(Float)
-    ssr_max = Column(Float)
-    ssr_mean = Column(Float)
-    str_min = Column(Float)
-    str_max = Column(Float)
-    str_mean = Column(Float)
-    ssh_min = Column(Float)
-    ssh_max = Column(Float)
-    ssh_mean = Column(Float)
-    e_min = Column(Float)
-    e_max = Column(Float)
-    e_mean = Column(Float)
-    tp_min = Column(Float)
-    tp_max = Column(Float)
-    tp_mean = Column(Float)
-    geom = Column(Geometry('POINT'))
+era5_table = Table(
+    "era5",
+    MetaData(),
+    Column("time", DateTime),
+    Column("u10_min", Float),
+    Column("u10_max", Float),
+    Column("u10_mean", Float),
+    Column("v10_min", Float),
+    Column("v10_max", Float),
+    Column("v10_mean", Float),
+    Column("d2m_min", Float),
+    Column("d2m_max", Float),
+    Column("d2m_mean", Float),
+    Column("t2m_min", Float),
+    Column("t2m_max", Float),
+    Column("t2m_mean", Float),
+    Column("lai_hv_min", Float),
+    Column("lai_hv_max", Float),
+    Column("lai_hv_mean", Float),
+    Column("pev_min", Float),
+    Column("pev_max", Float),
+    Column("pev_mean", Float),
+    Column("slhf_min", Float),
+    Column("slhf_max", Float),
+    Column("slhf_mean", Float),
+    Column("ssr_min", Float),
+    Column("ssr_max", Float),
+    Column("ssr_mean", Float),
+    Column("str_min", Float),
+    Column("str_max", Float),
+    Column("str_mean", Float),
+    Column("ssh_min", Float),
+    Column("ssh_max", Float),
+    Column("ssh_mean", Float),
+    Column("e_min", Float),
+    Column("e_max", Float),
+    Column("e_mean", Float),
+    Column("tp_min", Float),
+    Column("tp_max", Float),
+    Column("tp_mean", Float),
+    Column("geometry", Geometry("POINT")),
+)
