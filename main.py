@@ -1,3 +1,7 @@
+"""
+SCRIPT FOR WRITING THE ERA5 NC FILES DOWNLOADED WITH THE CDSAPI TO MY POSTGIS
+"""
+
 import os
 
 import geopandas as gpd
