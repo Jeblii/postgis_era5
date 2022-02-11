@@ -50,7 +50,7 @@ class DailyNorm:
 def parse_daily_norm(rows: Mapping[str, object]) -> List[DailyNorm]:
     daily_norms = [
         DailyNorm(
-            date=row["time"].date(),
+            date=row["day"],
             location=row["geometry"],
             temperature_min=row["t2m_min"],
             temperature_mean=row["t2m_mean"],
@@ -79,9 +79,9 @@ def parse_daily_norm(rows: Mapping[str, object]) -> List[DailyNorm]:
             surface_net_thermal_radiation_min=row["str_min"],
             surface_net_thermal_radiation_mean=row["str_mean"],
             surface_net_thermal_radiation_max=row["str_max"],
-            surface_sensible_heat_flux_min=row["ssr_min"],
-            surface_sensible_heat_flux_mean=row["ssr_mean"],
-            surface_sensible_heat_flux_max=row["ssr_max"],
+            surface_sensible_heat_flux_min=row["sshf_min"],
+            surface_sensible_heat_flux_mean=row["sshf_mean"],
+            surface_sensible_heat_flux_max=row["sshf_max"],
             total_precipitation_min=row["tp_min"],
             total_precipitation_mean=row["tp_mean"],
             total_precipitation_max=row["tp_max"],
