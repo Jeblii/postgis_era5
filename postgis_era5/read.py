@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
 from postgis_era5.types import WGS84Point
-from postgis_era5.parsing import parse_daily_norm
+from postgis_era5.parsing import parse_daily_weather_norm, parse_daily_weather
 
 db_string = "postgresql://localhost/era5"
 db_connection = create_engine(db_string)
@@ -47,8 +47,8 @@ class PSQLInterface:
             res = conn.execute(query, wkt=wkt_text).fetchall()
         return res[0]["st_astext"]
 
-    def retrieve_norm(
-        self, var: str, month: int, location: WGS84Point, year_range: int = 10
+    def retrieve_monthly_norm(
+        self, month: int, location: WGS84Point, year_range: int = 10
     ):
 
         closest_point = self.get_closest_point(location=location)
@@ -105,22 +105,25 @@ class PSQLInterface:
         )
         with self.engine.connect() as conn:
             res = conn.execute(query, month=month, closest_geo=closest_point).fetchall()
-        return parse_daily_norm(res)
+        return parse_daily_weather_norm(res)
 
-    def retrieve_historical_month_year(
-        self, var: str, month: int, location: WGS84Point, year=int
+    def retrieve_monthly_historical_observations(
+        self, month: int, year:int, location: WGS84Point
     ):
+        closest_point = self.get_closest_point(location=location)
+        closest_point = f"SRID=4326;{closest_point}"
         query = text(
             """
-            SELECT AVG(t2m_min) 
+            SELECT *
             FROM era5 
-            WHERE EXTRACT(MONTH FROM time) = :y 
+            WHERE ST_DWithin(geometry, :closest_geo, 0)
+            AND EXTRACT(MONTH FROM time) = :y 
             AND EXTRACT(YEAR FROM time) = :z;
             """
         )
         with self.engine.connect() as conn:
-            res = conn.execute(query, y=month, z=year).fetchall()
-        return res
+            res = conn.execute(query, y=month, z=year, closest_geo=closest_point).fetchall()
+        return parse_daily_weather(res)
 
 
 db = PSQLInterface(db_connection)
@@ -133,10 +136,11 @@ db.check_connection()
 #         print(row)
 # res = db.get_closest_point(WGS84Point(latitude=-22.804, longitude=-54.383))
 # print(res)
-res = db.retrieve_norm(
-    var="t2m_min", month=5, location=WGS84Point(latitude=-22.804, longitude=-54.383)
-)
-print(res)
-print(len(res))
+# res = db.retrieve_monthly_norm(
+#     month=5, location=WGS84Point(latitude=-22.804, longitude=-54.383)
+# )
 # print(res)
-# print(res[0].keys())
+# print(len(res))
+res = db.retrieve_monthly_historical_observations(month=5, year=2020, location=WGS84Point(latitude=-22.804, longitude=-54.383))
+print(res)
+print(res[0].keys())
