@@ -1,18 +1,8 @@
-import statistics
-import time
-from ast import parse
-from typing import List
-
 import sqlalchemy
-from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
 from postgis_era5.parsing import parse_daily_weather, parse_daily_weather_norm
 from postgis_era5.types import WGS84Point
-
-db_string = "postgresql://localhost/era5"
-db_connection = create_engine(db_string)
-
 
 class PSQLInterface:
 
@@ -127,26 +117,3 @@ class PSQLInterface:
         return parse_daily_weather(res)
 
 
-db = PSQLInterface(db_connection)
-db.check_connection()
-
-# s = select(era5_table.c.t2min)
-# with db_connection.connect() as conn:
-#     result = conn.execute(s)
-#     for row in result:
-#         print(row)
-# res = db.get_closest_point(WGS84Point(latitude=-22.804, longitude=-54.383))
-# print(res)
-tic = time.perf_counter()
-res = db.retrieve_monthly_norm(
-    month=5, location=WGS84Point(latitude=-22.804, longitude=-54.383)
-)
-# print(res)
-print(len(res))
-res = db.retrieve_monthly_historical_observations(
-    month=5, year=2020, location=WGS84Point(latitude=-22.804, longitude=-54.383)
-)
-# print(res)
-print(len(res))
-toc = time.perf_counter()
-print(f"{toc - tic:0.4f} seconds")

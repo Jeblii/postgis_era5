@@ -1,10 +1,8 @@
 import dataclasses as dc
 import datetime
 from typing import List, Mapping
-from xmlrpc.client import DateTime
 
 from postgis_era5.types import WGS84Point
-from postgis_era5.types import assert_cast
 
 
 @dc.dataclass
