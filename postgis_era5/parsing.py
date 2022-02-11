@@ -1,8 +1,10 @@
 import dataclasses as dc
 import datetime
+from typing import List, Mapping
 from xmlrpc.client import DateTime
+
 from postgis_era5.types import WGS84Point
-from typing import Mapping, List
+from postgis_era5.types import assert_cast
 
 
 @dc.dataclass
@@ -46,6 +48,7 @@ class DailyWeatherNorm:
     total_evaporation_mean: float
     total_evaporation_max: float
 
+
 @dc.dataclass
 class DailyWeather:
     date: datetime.date
@@ -86,6 +89,7 @@ class DailyWeather:
     total_evaporation_min: float
     total_evaporation_mean: float
     total_evaporation_max: float
+
 
 def parse_daily_weather_norm(rows: Mapping[str, object]) -> List[DailyWeatherNorm]:
     daily_norms = [
@@ -132,6 +136,7 @@ def parse_daily_weather_norm(rows: Mapping[str, object]) -> List[DailyWeatherNor
         for row in rows
     ]
     return daily_norms
+
 
 def parse_daily_weather(rows: Mapping[str, object]) -> List[DailyWeather]:
     daily_weather = [

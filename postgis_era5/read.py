@@ -1,13 +1,14 @@
-from ast import parse
 import statistics
+import time
+from ast import parse
 from typing import List
 
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.sql import text
 
+from postgis_era5.parsing import parse_daily_weather, parse_daily_weather_norm
 from postgis_era5.types import WGS84Point
-from postgis_era5.parsing import parse_daily_weather_norm, parse_daily_weather
 
 db_string = "postgresql://localhost/era5"
 db_connection = create_engine(db_string)
@@ -100,15 +101,13 @@ class PSQLInterface:
             AND ST_DWithin(geometry, :closest_geo, 0)
             GROUP BY EXTRACT(DAY FROM time), EXTRACT(MONTH FROM time),  geometry;
             """
-            # AND ST_DWithin(geometry, 'SRID=3857;:z', 0);
-            # kolom naam kan niet echt een variabel zijn. query builder api gebruiken.
         )
         with self.engine.connect() as conn:
             res = conn.execute(query, month=month, closest_geo=closest_point).fetchall()
         return parse_daily_weather_norm(res)
 
     def retrieve_monthly_historical_observations(
-        self, month: int, year:int, location: WGS84Point
+        self, month: int, year: int, location: WGS84Point
     ):
         closest_point = self.get_closest_point(location=location)
         closest_point = f"SRID=4326;{closest_point}"
@@ -122,7 +121,9 @@ class PSQLInterface:
             """
         )
         with self.engine.connect() as conn:
-            res = conn.execute(query, y=month, z=year, closest_geo=closest_point).fetchall()
+            res = conn.execute(
+                query, y=month, z=year, closest_geo=closest_point
+            ).fetchall()
         return parse_daily_weather(res)
 
 
@@ -136,11 +137,16 @@ db.check_connection()
 #         print(row)
 # res = db.get_closest_point(WGS84Point(latitude=-22.804, longitude=-54.383))
 # print(res)
-# res = db.retrieve_monthly_norm(
-#     month=5, location=WGS84Point(latitude=-22.804, longitude=-54.383)
-# )
+tic = time.perf_counter()
+res = db.retrieve_monthly_norm(
+    month=5, location=WGS84Point(latitude=-22.804, longitude=-54.383)
+)
 # print(res)
-# print(len(res))
-res = db.retrieve_monthly_historical_observations(month=5, year=2020, location=WGS84Point(latitude=-22.804, longitude=-54.383))
-print(res)
-print(res[0].keys())
+print(len(res))
+res = db.retrieve_monthly_historical_observations(
+    month=5, year=2020, location=WGS84Point(latitude=-22.804, longitude=-54.383)
+)
+# print(res)
+print(len(res))
+toc = time.perf_counter()
+print(f"{toc - tic:0.4f} seconds")
