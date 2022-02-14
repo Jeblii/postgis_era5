@@ -7,11 +7,15 @@ from postgis_era5.types import WGS84Point
 
 @dc.dataclass
 class DailyWeatherNorm:
-    date: datetime.date
+    month: int
+    day: int
     location: WGS84Point
-    temperature_min: float
-    temperature_mean: float
-    temperature_max: float
+    temperature_min_avg: float
+    temperature_min_stdev: float
+    temperature_mean_avg: float
+    temperature_mean_stdev: float
+    temperature_max_avg: float
+    temperature_max_stdev: float 
     dewpoint_temperature_min: float
     dewpoint_temperature_mean: float
     dewpoint_temperature_max: float
@@ -92,11 +96,15 @@ class DailyWeather:
 def parse_daily_weather_norm(rows: Mapping[str, object]) -> List[DailyWeatherNorm]:
     daily_norms = [
         DailyWeatherNorm(
-            date=row["day"],
+            month=row["month"],
+            day=row["day"],
             location=row["geometry"],
-            temperature_min=row["t2m_min"],
-            temperature_mean=row["t2m_mean"],
-            temperature_max=row["t2m_max"],
+            temperature_min_avg=row["t2m_min_avg"],
+            temperature_min_stdev=row['t2m_min_stdev'],
+            temperature_mean_avg=row["t2m_mean_avg"],
+            temperature_mean_stdev=row['t2m_mean_stdev'],
+            temperature_max_avg=row["t2m_max_avg"],
+            temperature_max_stdev=row['t2m_max_stdev'],
             dewpoint_temperature_min=row["d2m_min"],
             dewpoint_temperature_mean=row["d2m_mean"],
             dewpoint_temperature_max=row["d2m_max"],

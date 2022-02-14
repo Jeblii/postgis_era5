@@ -1,7 +1,8 @@
 import sqlalchemy
 from sqlalchemy.sql import text
+from typing import List
 
-from postgis_era5.parsing import parse_daily_weather, parse_daily_weather_norm
+from postgis_era5.parsing import parse_daily_weather, parse_daily_weather_norm, DailyWeather, DailyWeatherNorm
 from postgis_era5.types import WGS84Point
 
 class PSQLInterface:
@@ -23,7 +24,7 @@ class PSQLInterface:
                     f"unexpected value when running the health check, expected [(1,)] but found {repr(res)}, "
                 )
 
-    def get_closest_point(self, location: WGS84Point):
+    def get_closest_point(self, location: WGS84Point) -> str:
         # TODO(Jeffrey Tsang) this only works for point. Not yet tested for other types of geometry for behaviour. See also https://postgis.net/workshops/postgis-intro/knn.html
         wkt_text = f"SRID=4326;POINT({location.longitude} {location.latitude})"
         query = text(
@@ -40,7 +41,7 @@ class PSQLInterface:
 
     def retrieve_monthly_norm(
         self, month: int, location: WGS84Point, year_range: int = 10
-    ):
+    ) -> List[DailyWeatherNorm]:
 
         closest_point = self.get_closest_point(location=location)
         closest_point = f"SRID=4326;{closest_point}"
@@ -50,9 +51,12 @@ class PSQLInterface:
             ST_AsText(geometry) AS "geometry",
             EXTRACT(DAY FROM time) AS "day",
             EXTRACT(MONTH FROM time) AS "month",
-            AVG(t2m_min) AS "t2m_min", 
-            AVG(t2m_mean) AS "t2m_mean",
-            AVG(t2m_max) AS "t2m_max",
+            AVG(t2m_min) AS "t2m_min_avg", 
+            STDDEV(t2m_min) AS "t2m_min_stdev", 
+            AVG(t2m_mean) AS "t2m_mean_avg",
+            STDDEV(t2m_mean) AS "t2m_mean_stdev", 
+            AVG(t2m_max) AS "t2m_max_avg",
+            STDDEV(t2m_max) AS "t2m_max_stdev", 
             AVG(d2m_min) AS "d2m_min", 
             AVG(d2m_mean) AS "d2m_mean",
             AVG(d2m_max) AS "d2m_max",
@@ -98,7 +102,7 @@ class PSQLInterface:
 
     def retrieve_monthly_historical_observations(
         self, month: int, year: int, location: WGS84Point
-    ):
+    ) -> List[DailyWeather]:
         closest_point = self.get_closest_point(location=location)
         closest_point = f"SRID=4326;{closest_point}"
         query = text(
