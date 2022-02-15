@@ -4,7 +4,7 @@ from postgis_era5.psql import PSQLInterface
 from sqlalchemy import create_engine
 from pprint import pprint
 
-db_string = "postgresql://localhost/era5" #link to local postgres table
+db_string = "postgresql://localhost/era5"  # link to local postgres table
 db_connection = create_engine(db_string)
 
 db = PSQLInterface(db_connection)

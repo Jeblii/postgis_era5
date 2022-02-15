@@ -15,7 +15,7 @@ class DailyWeatherNorm:
     temperature_mean_avg: float
     temperature_mean_stdev: float
     temperature_max_avg: float
-    temperature_max_stdev: float 
+    temperature_max_stdev: float
     dewpoint_temperature_min: float
     dewpoint_temperature_mean: float
     dewpoint_temperature_max: float
@@ -100,11 +100,11 @@ def parse_daily_weather_norm(rows: Mapping[str, object]) -> List[DailyWeatherNor
             day=row["day"],
             location=row["geometry"],
             temperature_min_avg=row["t2m_min_avg"],
-            temperature_min_stdev=row['t2m_min_stdev'],
+            temperature_min_stdev=row["t2m_min_stdev"],
             temperature_mean_avg=row["t2m_mean_avg"],
-            temperature_mean_stdev=row['t2m_mean_stdev'],
+            temperature_mean_stdev=row["t2m_mean_stdev"],
             temperature_max_avg=row["t2m_max_avg"],
-            temperature_max_stdev=row['t2m_max_stdev'],
+            temperature_max_stdev=row["t2m_max_stdev"],
             dewpoint_temperature_min=row["d2m_min"],
             dewpoint_temperature_mean=row["d2m_mean"],
             dewpoint_temperature_max=row["d2m_max"],
