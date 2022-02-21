@@ -5,6 +5,15 @@ from typing import List, Mapping
 from src.postgis_era5.types import WGS84Point
 
 
+"""
+temp: min, max, mean
+precipitation: sum
+humidity: max, min
+daily_max_wind
+daily_mean wind
+gdd
+"""
+
 @dc.dataclass
 class DailyWeatherNorm:
     month: int
@@ -16,39 +25,48 @@ class DailyWeatherNorm:
     temperature_mean_stdev: float
     temperature_max_avg: float
     temperature_max_stdev: float
-    dewpoint_temperature_min: float
-    dewpoint_temperature_mean: float
-    dewpoint_temperature_max: float
-    east_wind_min: float
-    east_wind_mean: float
-    east_wind_max: float
-    north_wind_min: float
-    north_wind_mean: float
-    north_wind_max: float
-    leaf_area_index_high_vegetation_min: float
-    leaf_area_index_high_vegetation_mean: float
-    leaf_area_index_high_vegetation_max: float
-    potential_evaporation_min: float
-    potential_evaporation_mean: float
-    potential_evaporation_max: float
-    surface_latent_heat_flux_min: float
-    surface_latent_heat_flux_mean: float
-    surface_latent_heat_flux_max: float
-    surface_net_solar_radiation_min: float
-    surface_net_solar_radiation_mean: float
-    surface_net_solar_radiation_max: float
-    surface_net_thermal_radiation_min: float
-    surface_net_thermal_radiation_mean: float
-    surface_net_thermal_radiation_max: float
-    surface_sensible_heat_flux_min: float
-    surface_sensible_heat_flux_mean: float
-    surface_sensible_heat_flux_max: float
-    total_precipitation_min: float
-    total_precipitation_mean: float
-    total_precipitation_max: float
-    total_evaporation_min: float
-    total_evaporation_mean: float
-    total_evaporation_max: float
+    soil_temperature_1m_min_avg: float
+    soil_temperature_1m_min_stdev: float
+    soil_temperature_1m_mean_avg: float
+    soil_temperature_1m_mean_stdev: float
+    soil_temperature_1m_max_avg: float
+    soil_temperature_1m_max_stdev: float
+    dewpoint_temperature_min_avg: float
+    dewpoint_temperature_min_stdev: float
+    dewpoint_temperature_mean_avg: float
+    dewpoint_temperature_mean_stdev: float
+    dewpoint_temperature_max_avg: float
+    dewpoint_temperature_max_stdev: float
+    wind_mean_avg: float
+    wind_mean_stdev: float
+    wind_max_avg: float
+    wind_max_stdev: float
+    pet_mean_avg: float
+    pet_mean_stdev: float
+    pet_max_avg: float
+    pet_max_stdev: float
+    gdd_avg: float
+    gdd_stdev: float
+    net_radiation_min_avg: float
+    net_radiation_min_stdev: float
+    net_radiation_mean_avg: float
+    net_radiation_mean_stdev: float
+    net_radiation_max_avg: float
+    net_radiation_max_stdev: float
+    surface_net_solar_radiation_min_avg: float
+    surface_net_solar_radiation_min_stdev: float
+    surface_net_solar_radiation_mean_avg: float
+    surface_net_solar_radiation_mean_stdev: float
+    surface_net_solar_radiation_max_avg: float
+    surface_net_solar_radiation_max_stdev: float
+    surface_net_thermal_radiation_min_avg: float
+    surface_net_thermal_radiation_min_stdev: float
+    surface_net_thermal_radiation_mean_avg: float
+    surface_net_thermal_radiation_mean_stdev: float
+    surface_net_thermal_radiation_max_avg: float
+    surface_net_thermal_radiation_max_stdev: float
+    total_precipitation_sum_avg: float
+    total_precipitation_sum_stdev: float
 
 
 @dc.dataclass
@@ -58,39 +76,28 @@ class DailyWeather:
     temperature_min: float
     temperature_mean: float
     temperature_max: float
+    soil_temperature_1m_min: float
+    soil_temperature_1m_mean: float
+    soil_temperature_1m_max: float
     dewpoint_temperature_min: float
     dewpoint_temperature_mean: float
     dewpoint_temperature_max: float
-    east_wind_min: float
-    east_wind_mean: float
-    east_wind_max: float
-    north_wind_min: float
-    north_wind_mean: float
-    north_wind_max: float
-    leaf_area_index_high_vegetation_min: float
-    leaf_area_index_high_vegetation_mean: float
-    leaf_area_index_high_vegetation_max: float
-    potential_evaporation_min: float
-    potential_evaporation_mean: float
-    potential_evaporation_max: float
-    surface_latent_heat_flux_min: float
-    surface_latent_heat_flux_mean: float
-    surface_latent_heat_flux_max: float
+    wind_min: float
+    wind_mean: float
+    wind_max: float
+    pet_mean: float
+    pet_max: float
+    gdd: float
+    net_radiation_min: float
+    net_radiation_mean: float
+    net_radiation_max: float
     surface_net_solar_radiation_min: float
     surface_net_solar_radiation_mean: float
     surface_net_solar_radiation_max: float
     surface_net_thermal_radiation_min: float
     surface_net_thermal_radiation_mean: float
     surface_net_thermal_radiation_max: float
-    surface_sensible_heat_flux_min: float
-    surface_sensible_heat_flux_mean: float
-    surface_sensible_heat_flux_max: float
-    total_precipitation_min: float
-    total_precipitation_mean: float
-    total_precipitation_max: float
-    total_evaporation_min: float
-    total_evaporation_mean: float
-    total_evaporation_max: float
+    total_precipitation_sum: float
 
 
 def parse_daily_weather_norm(rows: Mapping[str, object]) -> List[DailyWeatherNorm]:

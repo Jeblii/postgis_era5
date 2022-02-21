@@ -9,7 +9,7 @@ from src.postgis_era5.parsing import (
     DailyWeatherNorm,
 )
 from src.postgis_era5.types import WGS84Point
-
+from psycopg2 import sql
 
 class PSQLInterface:
 
@@ -35,8 +35,7 @@ class PSQLInterface:
         wkt_text = f"SRID=4326;POINT({location.longitude} {location.latitude})"
         query = text(
             """
-            SELECT ST_AsText(geometry) FROM era5
-            WHERE EXTRACT(MONTH FROM time) = 5 
+            SELECT ST_AsText(geometry) FROM era5_ecuador
             ORDER BY geometry::geometry <-> ST_GeomFromText(:wkt)::geometry
             LIMIT 1;
             """
@@ -96,7 +95,7 @@ class PSQLInterface:
             AVG(e_min) AS "e_min", 
             AVG(e_mean) AS "e_mean",
             AVG(e_max) AS "e_max"
-            FROM era5 
+            FROM era5_ecuador 
             WHERE EXTRACT(MONTH FROM time) = :month
             AND ST_DWithin(geometry, :closest_geo, 0)
             GROUP BY EXTRACT(DAY FROM time), EXTRACT(MONTH FROM time),  geometry;
@@ -114,7 +113,7 @@ class PSQLInterface:
         query = text(
             """
             SELECT *
-            FROM era5 
+            FROM era5_ecuador
             WHERE ST_DWithin(geometry, :closest_geo, 0)
             AND EXTRACT(MONTH FROM time) = :y 
             AND EXTRACT(YEAR FROM time) = :z;

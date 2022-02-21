@@ -10,6 +10,9 @@ db_connection = create_engine(db_string)
 db = PSQLInterface(db_connection)
 db.check_connection()
 
+res = db.get_closest_point(location=WGS84Point(latitude=-22.804, longitude=-54.383))
+pprint(res)
+
 tic = time.perf_counter()
 res = db.retrieve_monthly_norm(
     month=5, location=WGS84Point(latitude=-22.804, longitude=-54.383)
