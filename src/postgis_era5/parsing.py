@@ -68,7 +68,6 @@ class DailyWeather:
     dewpoint_temperature_min: float
     dewpoint_temperature_mean: float
     dewpoint_temperature_max: float
-    wind_min: float
     wind_mean: float
     wind_max: float
     pet_mean: float
