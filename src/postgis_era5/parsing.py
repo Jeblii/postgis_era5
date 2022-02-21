@@ -43,13 +43,10 @@ class DailyWeatherNorm:
     wind_max_stdev: float
     pet_mean_avg: float
     pet_mean_stdev: float
-    pet_max_avg: float
-    pet_max_stdev: float
     gdd_avg: float
     gdd_stdev: float
     net_radiation_avg: float
     net_radiation_stdev: float
-    net_radiation_max_stdev: float
     surface_net_solar_radiation_avg: float
     surface_net_solar_radiation_stdev: float
     surface_net_thermal_radiation_avg: float
@@ -75,7 +72,6 @@ class DailyWeather:
     wind_mean: float
     wind_max: float
     pet_mean: float
-    pet_max: float
     gdd: float
     net_radiation: float
     surface_net_solar_radiation: float
@@ -91,41 +87,38 @@ def parse_daily_weather_norm(rows: Mapping[str, object]) -> List[DailyWeatherNor
             location=row["geometry"],
             temperature_min_avg=row['t2m_min_avg'],
             temperature_min_stdev=row['t2m_min_stdev'],
-            temperature_mean_avg: float
-            temperature_mean_stdev: float
-            temperature_max_avg: float
-            temperature_max_stdev: float
-            soil_temperature_1m_min_avg: float
-            soil_temperature_1m_min_stdev: float
-            soil_temperature_1m_mean_avg: float
-            soil_temperature_1m_mean_stdev: float
-            soil_temperature_1m_max_avg: float
-            soil_temperature_1m_max_stdev: float
-            dewpoint_temperature_min_avg: float
-            dewpoint_temperature_min_stdev: float
-            dewpoint_temperature_mean_avg: float
-            dewpoint_temperature_mean_stdev: float
-            dewpoint_temperature_max_avg: float
-            dewpoint_temperature_max_stdev: float
-            wind_mean_avg: float
-            wind_mean_stdev: float
-            wind_max_avg: float
-            wind_max_stdev: float
-            pet_mean_avg: float
-            pet_mean_stdev: float
-            pet_max_avg: float
-            pet_max_stdev: float
-            gdd_avg: float
-            gdd_stdev: float
-            net_radiation_avg: float
-            net_radiation_stdev: float
-            net_radiation_max_stdev: float
-            surface_net_solar_radiation_avg: float
-            surface_net_solar_radiation_stdev: float
-            surface_net_thermal_radiation_avg: float
-            surface_net_thermal_radiation_stdev: float
-            total_precipitation_sum_avg: float
-            total_precipitation_sum_stdev: float
+            temperature_mean_avg=row['t2m_mean_avg'],
+            temperature_mean_stdev=row['t2m_mean_stdev'],
+            temperature_max_avg=row['t2m_max_avg'],
+            temperature_max_stdev=row['t2m_max_stdev'],
+            soil_temperature_1m_min_avg=row['stl1_min_avg'],
+            soil_temperature_1m_min_stdev=row['stl1_min_stdev'],
+            soil_temperature_1m_mean_avg=row['stl1_mean_avg'],
+            soil_temperature_1m_mean_stdev=row['stl1_mean_stdev'],
+            soil_temperature_1m_max_avg=row['stl1_max_avg'],
+            soil_temperature_1m_max_stdev=row['stl1_max_stdev'],
+            dewpoint_temperature_min_avg=row['d2m_min_avg'],
+            dewpoint_temperature_min_stdev=row['d2m_min_stdev'],
+            dewpoint_temperature_mean_avg=row['d2m_mean_avg'],
+            dewpoint_temperature_mean_stdev=row['d2m_mean_stdev'],
+            dewpoint_temperature_max_avg=row['d2m_max_avg'],
+            dewpoint_temperature_max_stdev=row['d2m_max_stdev'],
+            wind_mean_avg=row['ws_2m_mean_avg'],
+            wind_mean_stdev=row['ws_2m_mean_stdev'],
+            wind_max_avg=row['ws_2m_max_avg'],
+            wind_max_stdev=row['ws_2m_max_stdev'],
+            pet_mean_avg=row['daily_pet_mean_avg'],
+            pet_mean_stdev=row['daily_pet_mean_stdev'],
+            gdd_avg=row['gdd_avg'],
+            gdd_stdev=row['gdd_stdev'],
+            net_radiation_avg=row['nr_avg'],
+            net_radiation_stdev=row['nr_stdev'],
+            surface_net_solar_radiation_avg=row['ssr_avg'],
+            surface_net_solar_radiation_stdev=row['ssr_stdev'],
+            surface_net_thermal_radiation_avg=row['str_avg'],
+            surface_net_thermal_radiation_stdev=row['str_stdev'],
+            total_precipitation_sum_avg=row['tp_avg'],
+            total_precipitation_sum_stdev=row['tp_stdev'],
         )
         for row in rows
     ]
@@ -140,24 +133,20 @@ def parse_daily_weather(rows: Mapping[str, object]) -> List[DailyWeather]:
             temperature_min=row["t2m_min"],
             temperature_mean=row["t2m_mean"],
             temperature_max=row["t2m_max"],
+            soil_temperature_1m_min=row['stl1_min'],
+            soil_temperature_1m_mean=row['stl1_mean'],
+            soil_temperature_1m_max=row['stl1_max'],
             dewpoint_temperature_min=row["d2m_min"],
             dewpoint_temperature_mean=row["d2m_mean"],
             dewpoint_temperature_max=row["d2m_max"],
-            wind_mean=row["u10_min"],
-            wind_max=row["u10_mean"],
-            pet_mean=row['pet_mean'],
-            pet_max=row['pet_max'],
+            wind_mean=row["ws_2m_mean"],
+            wind_max=row["ws_2m_max"],
+            pet_mean=row['daily_pet_mean'],
             gdd=row['gdd'],
-            net_radiation_min=row['nr_min'],
-            net_radiation_mean=row['nr_mean'],
-            net_radiation_max=row['nr_max'],
-            surface_net_solar_radiation_min=row["ssr_min"],
-            surface_net_solar_radiation_mean=row["ssr_mean"],
-            surface_net_solar_radiation_max=row["ssr_max"],
-            surface_net_thermal_radiation_min=row["str_min"],
-            surface_net_thermal_radiation_mean=row["str_mean"],
-            surface_net_thermal_radiation_max=row["str_max"],
-            total_precipitation_sum=row['tp_sum']
+            net_radiation=row['nr'],
+            surface_net_solar_radiation=row['ssr_max'],
+            surface_net_thermal_radiation=row['str_min'],
+            total_precipitation_sum=row['tp_sum'],
         )
         for row in rows
     ]

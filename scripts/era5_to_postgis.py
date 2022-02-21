@@ -46,7 +46,7 @@ def main():
 
     nc_file_paths = retrieve_nc_file_paths(config.path_to_nc_files)
 
-    for file in nc_file_paths[:1]:
+    for file in nc_file_paths:
         logging.info(f'{file}; start processing')
         ds = xr.open_dataset(
             file
