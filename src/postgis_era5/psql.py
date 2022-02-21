@@ -30,6 +30,17 @@ class PSQLInterface:
                     f"unexpected value when running the health check, expected [(1,)] but found {repr(res)}, "
                 )
 
+    def get_all_unique_points(self) -> List[str]:
+        with self.engine.connect() as conn:
+            res = conn.execute(
+                """
+                SELECT ST_AsText(geometry)
+                FROM era5_ecuador
+                GROUP BY geometry;
+                """
+            ).fetchall()
+        return res
+
     def get_closest_point(self, location: WGS84Point) -> str:
         # TODO(Jeffrey Tsang) this only works for point. Not yet tested for other types of geometry for behaviour. See also https://postgis.net/workshops/postgis-intro/knn.html
         wkt_text = f"SRID=4326;POINT({location.longitude} {location.latitude})"
@@ -45,11 +56,11 @@ class PSQLInterface:
         return res[0]["st_astext"]
 
     def retrieve_monthly_norm(
-        self, month: int, location: WGS84Point, year_range: int = 10
+        self, month: int, year_range: int = 10
     ) -> List[DailyWeatherNorm]:
 
-        closest_point = self.get_closest_point(location=location)
-        closest_point = f"SRID=4326;{closest_point}"
+        # closest_point = self.get_closest_point(location=location)
+        # closest_point = f"SRID=4326;{closest_point}"
         query = text(
             """
             SELECT 
@@ -92,30 +103,31 @@ class PSQLInterface:
             STDDEV(nr) AS "tp_stdev"
             FROM era5_ecuador 
             WHERE EXTRACT(MONTH FROM time) = :month
-            AND ST_DWithin(geometry, :closest_geo, 0)
+            
             GROUP BY EXTRACT(DAY FROM time), EXTRACT(MONTH FROM time),  geometry;
             """
+            # AND ST_DWithin(geometry, :closest_geo, 0)
         )
         with self.engine.connect() as conn:
-            res = conn.execute(query, month=month, closest_geo=closest_point).fetchall()
+            res = conn.execute(query, month=month).fetchall()
         return parse_daily_weather_norm(res)
 
     def retrieve_monthly_historical_observations(
         self, month: int, year: int, location: WGS84Point
     ) -> List[DailyWeather]:
-        closest_point = self.get_closest_point(location=location)
-        closest_point = f"SRID=4326;{closest_point}"
+        # closest_point = self.get_closest_point(location=location)
+        # closest_point = f"SRID=4326;{closest_point}"
         query = text(
             """
             SELECT *
             FROM era5_ecuador
-            WHERE ST_DWithin(geometry, :closest_geo, 0)
-            AND EXTRACT(MONTH FROM time) = :y 
+            WHERE EXTRACT(MONTH FROM time) = :y 
             AND EXTRACT(YEAR FROM time) = :z;
             """
+            # WHERE ST_DWithin(geometry, :closest_geo, 0)
         )
         with self.engine.connect() as conn:
             res = conn.execute(
-                query, y=month, z=year, closest_geo=closest_point
+                query, y=month, z=year
             ).fetchall()
         return parse_daily_weather(res)
