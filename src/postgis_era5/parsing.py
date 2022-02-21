@@ -47,24 +47,13 @@ class DailyWeatherNorm:
     pet_max_stdev: float
     gdd_avg: float
     gdd_stdev: float
-    net_radiation_min_avg: float
-    net_radiation_min_stdev: float
-    net_radiation_mean_avg: float
-    net_radiation_mean_stdev: float
-    net_radiation_max_avg: float
+    net_radiation_avg: float
+    net_radiation_stdev: float
     net_radiation_max_stdev: float
-    surface_net_solar_radiation_min_avg: float
-    surface_net_solar_radiation_min_stdev: float
-    surface_net_solar_radiation_mean_avg: float
-    surface_net_solar_radiation_mean_stdev: float
-    surface_net_solar_radiation_max_avg: float
-    surface_net_solar_radiation_max_stdev: float
-    surface_net_thermal_radiation_min_avg: float
-    surface_net_thermal_radiation_min_stdev: float
-    surface_net_thermal_radiation_mean_avg: float
-    surface_net_thermal_radiation_mean_stdev: float
-    surface_net_thermal_radiation_max_avg: float
-    surface_net_thermal_radiation_max_stdev: float
+    surface_net_solar_radiation_avg: float
+    surface_net_solar_radiation_stdev: float
+    surface_net_thermal_radiation_avg: float
+    surface_net_thermal_radiation_stdev: float
     total_precipitation_sum_avg: float
     total_precipitation_sum_stdev: float
 
@@ -88,15 +77,9 @@ class DailyWeather:
     pet_mean: float
     pet_max: float
     gdd: float
-    net_radiation_min: float
-    net_radiation_mean: float
-    net_radiation_max: float
-    surface_net_solar_radiation_min: float
-    surface_net_solar_radiation_mean: float
-    surface_net_solar_radiation_max: float
-    surface_net_thermal_radiation_min: float
-    surface_net_thermal_radiation_mean: float
-    surface_net_thermal_radiation_max: float
+    net_radiation: float
+    surface_net_solar_radiation: float
+    surface_net_thermal_radiation: float
     total_precipitation_sum: float
 
 
@@ -106,45 +89,43 @@ def parse_daily_weather_norm(rows: Mapping[str, object]) -> List[DailyWeatherNor
             month=row["month"],
             day=row["day"],
             location=row["geometry"],
-            temperature_min_avg=row["t2m_min_avg"],
-            temperature_min_stdev=row["t2m_min_stdev"],
-            temperature_mean_avg=row["t2m_mean_avg"],
-            temperature_mean_stdev=row["t2m_mean_stdev"],
-            temperature_max_avg=row["t2m_max_avg"],
-            temperature_max_stdev=row["t2m_max_stdev"],
-            dewpoint_temperature_min=row["d2m_min"],
-            dewpoint_temperature_mean=row["d2m_mean"],
-            dewpoint_temperature_max=row["d2m_max"],
-            east_wind_min=row["u10_min"],
-            east_wind_mean=row["u10_mean"],
-            east_wind_max=row["u10_max"],
-            north_wind_min=row["v10_min"],
-            north_wind_mean=row["v10_mean"],
-            north_wind_max=row["v10_max"],
-            leaf_area_index_high_vegetation_min=row["lai_hv_min"],
-            leaf_area_index_high_vegetation_mean=row["lai_hv_mean"],
-            leaf_area_index_high_vegetation_max=row["lai_hv_max"],
-            potential_evaporation_min=row["pev_min"],
-            potential_evaporation_mean=row["pev_mean"],
-            potential_evaporation_max=row["pev_max"],
-            surface_latent_heat_flux_min=row["slhf_min"],
-            surface_latent_heat_flux_mean=row["slhf_mean"],
-            surface_latent_heat_flux_max=row["slhf_max"],
-            surface_net_solar_radiation_min=row["ssr_min"],
-            surface_net_solar_radiation_mean=row["ssr_mean"],
-            surface_net_solar_radiation_max=row["ssr_max"],
-            surface_net_thermal_radiation_min=row["str_min"],
-            surface_net_thermal_radiation_mean=row["str_mean"],
-            surface_net_thermal_radiation_max=row["str_max"],
-            surface_sensible_heat_flux_min=row["sshf_min"],
-            surface_sensible_heat_flux_mean=row["sshf_mean"],
-            surface_sensible_heat_flux_max=row["sshf_max"],
-            total_precipitation_min=row["tp_min"],
-            total_precipitation_mean=row["tp_mean"],
-            total_precipitation_max=row["tp_max"],
-            total_evaporation_min=row["e_min"],
-            total_evaporation_mean=row["e_mean"],
-            total_evaporation_max=row["e_max"],
+            temperature_min_avg=row['t2m_min_avg'],
+            temperature_min_stdev=row['t2m_min_stdev'],
+            temperature_mean_avg: float
+            temperature_mean_stdev: float
+            temperature_max_avg: float
+            temperature_max_stdev: float
+            soil_temperature_1m_min_avg: float
+            soil_temperature_1m_min_stdev: float
+            soil_temperature_1m_mean_avg: float
+            soil_temperature_1m_mean_stdev: float
+            soil_temperature_1m_max_avg: float
+            soil_temperature_1m_max_stdev: float
+            dewpoint_temperature_min_avg: float
+            dewpoint_temperature_min_stdev: float
+            dewpoint_temperature_mean_avg: float
+            dewpoint_temperature_mean_stdev: float
+            dewpoint_temperature_max_avg: float
+            dewpoint_temperature_max_stdev: float
+            wind_mean_avg: float
+            wind_mean_stdev: float
+            wind_max_avg: float
+            wind_max_stdev: float
+            pet_mean_avg: float
+            pet_mean_stdev: float
+            pet_max_avg: float
+            pet_max_stdev: float
+            gdd_avg: float
+            gdd_stdev: float
+            net_radiation_avg: float
+            net_radiation_stdev: float
+            net_radiation_max_stdev: float
+            surface_net_solar_radiation_avg: float
+            surface_net_solar_radiation_stdev: float
+            surface_net_thermal_radiation_avg: float
+            surface_net_thermal_radiation_stdev: float
+            total_precipitation_sum_avg: float
+            total_precipitation_sum_stdev: float
         )
         for row in rows
     ]
@@ -162,36 +143,21 @@ def parse_daily_weather(rows: Mapping[str, object]) -> List[DailyWeather]:
             dewpoint_temperature_min=row["d2m_min"],
             dewpoint_temperature_mean=row["d2m_mean"],
             dewpoint_temperature_max=row["d2m_max"],
-            east_wind_min=row["u10_min"],
-            east_wind_mean=row["u10_mean"],
-            east_wind_max=row["u10_max"],
-            north_wind_min=row["v10_min"],
-            north_wind_mean=row["v10_mean"],
-            north_wind_max=row["v10_max"],
-            leaf_area_index_high_vegetation_min=row["lai_hv_min"],
-            leaf_area_index_high_vegetation_mean=row["lai_hv_mean"],
-            leaf_area_index_high_vegetation_max=row["lai_hv_max"],
-            potential_evaporation_min=row["pev_min"],
-            potential_evaporation_mean=row["pev_mean"],
-            potential_evaporation_max=row["pev_max"],
-            surface_latent_heat_flux_min=row["slhf_min"],
-            surface_latent_heat_flux_mean=row["slhf_mean"],
-            surface_latent_heat_flux_max=row["slhf_max"],
+            wind_mean=row["u10_min"],
+            wind_max=row["u10_mean"],
+            pet_mean=row['pet_mean'],
+            pet_max=row['pet_max'],
+            gdd=row['gdd'],
+            net_radiation_min=row['nr_min'],
+            net_radiation_mean=row['nr_mean'],
+            net_radiation_max=row['nr_max'],
             surface_net_solar_radiation_min=row["ssr_min"],
             surface_net_solar_radiation_mean=row["ssr_mean"],
             surface_net_solar_radiation_max=row["ssr_max"],
             surface_net_thermal_radiation_min=row["str_min"],
             surface_net_thermal_radiation_mean=row["str_mean"],
             surface_net_thermal_radiation_max=row["str_max"],
-            surface_sensible_heat_flux_min=row["sshf_min"],
-            surface_sensible_heat_flux_mean=row["sshf_mean"],
-            surface_sensible_heat_flux_max=row["sshf_max"],
-            total_precipitation_min=row["tp_min"],
-            total_precipitation_mean=row["tp_mean"],
-            total_precipitation_max=row["tp_max"],
-            total_evaporation_min=row["e_min"],
-            total_evaporation_mean=row["e_mean"],
-            total_evaporation_max=row["e_max"],
+            total_precipitation_sum=row['tp_sum']
         )
         for row in rows
     ]

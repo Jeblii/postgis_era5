@@ -46,7 +46,7 @@ def main():
 
     nc_file_paths = retrieve_nc_file_paths(config.path_to_nc_files)
 
-    for file in nc_file_paths:
+    for file in nc_file_paths[:1]:
         logging.info(f'{file}; start processing')
         ds = xr.open_dataset(
             file
@@ -86,14 +86,13 @@ def main():
                     "max"
                 ],  # the max gets the accumulated radiation over the whole day
                 "str": [
-                    "max"
-                ],  # the max gets the accumulated radiation over the whole day
+                    "min"
+                ],  # the min gets the accumulated radiation over the whole day
                 "sp": [
                     "mean"
                 ],  # this is a feature that don't really deviate and is only used to calculate pet
                 "tp": ["sum"],  # sum total precipitation on a day
                 "ws_2m": ["mean", "max"],
-                "nr": ["min", "mean", "max"],
                 "rh": ["min", "mean", "max"],
                 "G": ["min", "mean", "max"],
             }
@@ -101,6 +100,8 @@ def main():
         agg_df.columns = ["_".join(col) for col in agg_df.columns]
 
         logging.info(f'aggregation to daily levels finished')
+
+        agg_df['nr'] = agg_df.ssr_max + agg_df.str_min
 
         # GDD
         agg_df['gdd'] = daily_gdd(agg_df.t2m_max, agg_df.t2m_min)
@@ -111,19 +112,8 @@ def main():
             temperature2m_C=agg_df.t2m_mean,
             dewpoint2m_C=agg_df.d2m_mean,
             windspeed2m_m_s=agg_df.ws_2m_mean,
-            net_radiation_MJ_m2=agg_df.nr_mean / 1000000,  # from joule -> megajoule
+            net_radiation_MJ_m2=agg_df.nr / 1000000,  # from joule -> megajoule
             soil_hf=agg_df.G_mean / 1000000,
-            pet_time="daily",
-        )
-
-        # PET MAX
-        agg_df["daily_pet_max"] = calculate_pet(
-            surface_pressure_KPa=agg_df.sp_mean / 1000,  # from pa to Kpa
-            temperature2m_C=agg_df.t2m_max,
-            dewpoint2m_C=agg_df.d2m_max,
-            windspeed2m_m_s=agg_df.ws_2m_max,
-            net_radiation_MJ_m2=agg_df.nr_max / 1000000,  # from joule -> megajoule
-            soil_hf=agg_df.G_max / 1000000,
             pet_time="daily",
         )
 
