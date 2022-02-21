@@ -1,6 +1,6 @@
 import cdsapi
 from typing import List
-from ingestion.constants import VARIABLES, DAYS, MONTHS, TIME
+from src.ingestion.constants import VARIABLES, DAYS, MONTHS, TIME
 
 
 class CdsAPI:

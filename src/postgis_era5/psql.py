@@ -2,13 +2,13 @@ import sqlalchemy
 from sqlalchemy.sql import text
 from typing import List
 
-from postgis_era5.parsing import (
+from src.postgis_era5.parsing import (
     parse_daily_weather,
     parse_daily_weather_norm,
     DailyWeather,
     DailyWeatherNorm,
 )
-from postgis_era5.types import WGS84Point
+from src.postgis_era5.types import WGS84Point
 
 
 class PSQLInterface:

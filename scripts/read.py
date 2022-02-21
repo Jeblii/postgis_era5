@@ -1,6 +1,6 @@
 import time
-from postgis_era5.types import WGS84Point
-from postgis_era5.psql import PSQLInterface
+from src.postgis_era5.types import WGS84Point
+from src.postgis_era5.psql import PSQLInterface
 from sqlalchemy import create_engine
 from pprint import pprint
 

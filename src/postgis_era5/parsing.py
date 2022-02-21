@@ -2,7 +2,7 @@ import dataclasses as dc
 import datetime
 from typing import List, Mapping
 
-from postgis_era5.types import WGS84Point
+from src.postgis_era5.types import WGS84Point
 
 
 @dc.dataclass
