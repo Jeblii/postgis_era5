@@ -14,6 +14,7 @@ from geoalchemy2 import Geometry, WKTElement
 from shapely.geometry import Point
 from sqlalchemy import *
 from src.ingestion.conversions import *
+from config import config
 
 def retrive_nc_files(path: str) -> List[str]:
     pass
@@ -21,11 +22,11 @@ def retrive_nc_files(path: str) -> List[str]:
 def main():
 
     # Creating SQLAlchemy's engine to use
-    engine = create_engine("postgresql://localhost/era5")
+    engine = create_engine(config.database_url)
 
     nc_files = []
     for _, _, files in os.walk(
-        "/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/sicredi/"
+        config.path_to_nc_files
     ):
         for name in files:
             if name.endswith((".nc")):
@@ -34,7 +35,7 @@ def main():
     for file in nc_files:
         print(file)
         ds = xr.open_dataset(
-            f"/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/sicredi/{file}"
+            f"{config.path_to_nc_files}/{file}"
         )
         df = ds.to_dataframe()
         df.dropna(inplace=True)
