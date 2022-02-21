@@ -21,7 +21,7 @@ db.check_connection()
 """
 load in previous sicredi data set for finding points to ingest
 """
-fn = "/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/Sicredi/historical_weather_new_plots.csv"
+fn = "bla"
 
 df = pd.read_csv(fn)
 df = df[
@@ -56,4 +56,4 @@ print(norm_df.shape)
 toc = time.perf_counter()
 print(f"{toc - tic:0.4f} seconds")
 
-norm_df.to_csv("output_files/historical_sicredi_weather.csv", index=False)
+norm_df.to_csv("output_files/historical.csv", index=False)

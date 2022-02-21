@@ -132,3 +132,4 @@ config.py
 
 .vscode
 .output_files
+.DS_Store
