@@ -113,13 +113,39 @@ class PSQLInterface:
         return parse_daily_weather_norm(res)
 
     def retrieve_monthly_historical_observations(
-        self, month: int, year: int, location: WGS84Point
+        self, month: int, year: int,
     ) -> List[DailyWeather]:
         # closest_point = self.get_closest_point(location=location)
         # closest_point = f"SRID=4326;{closest_point}"
         query = text(
             """
-            SELECT *
+            SELECT 
+            time,
+            d2m_min,
+            d2m_mean,
+            d2m_max,
+            t2m_min,
+            t2m_mean,
+            t2m_max,
+            stl1_min,
+            stl1_mean,
+            stl1_max,
+            ssr_max,
+            str_min,
+            sp_mean,
+            tp_sum,
+            ws_2m_mean,
+            ws_2m_max,
+            rh_min,
+            rh_mean,
+            rh_max,
+            "G_min",
+            "G_mean",
+            "G_max",
+            nr,
+            gdd,
+            daily_pet_mean,
+            ST_AsText(geometry) AS "geometry"
             FROM era5_ecuador
             WHERE EXTRACT(MONTH FROM time) = :y 
             AND EXTRACT(YEAR FROM time) = :z;
