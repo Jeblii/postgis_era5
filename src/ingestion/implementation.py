@@ -1,6 +1,7 @@
-import cdsapi
 from typing import List
-from src.ingestion.constants import VARIABLES, DAYS, MONTHS, TIME
+
+import cdsapi
+from src.ingestion.constants import DAYS, MONTHS, TIME, VARIABLES
 
 
 class CdsAPI:
@@ -34,7 +35,7 @@ class CdsAPI:
                 ],
                 "format": "netcdf",
             },
-            f"/Users/jeffreytsang/OneDrive - Raboweb/Documents/Notebooks/weather_data_vendor_trials/era5/BP/era5_{region}_{year}.nc",
+            f"output_files/sicredi/parana/era5_{region}_{year}.nc",
         )
 
         return None

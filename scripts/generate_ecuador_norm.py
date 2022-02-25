@@ -1,11 +1,12 @@
-import pandas as pd
-from ast import literal_eval
-from src.postgis_era5.types import WGS84Point
-from src.postgis_era5.psql import PSQLInterface
-from sqlalchemy import create_engine
-from pprint import pprint
 import time
+from ast import literal_eval
+from pprint import pprint
+
+import pandas as pd
 from config import config
+from sqlalchemy import create_engine
+from src.postgis_era5.psql import PSQLInterface
+from src.postgis_era5.types import WGS84Point
 
 MONTHS = range(1, 13)
 
@@ -34,4 +35,4 @@ print(norm_df.shape)
 toc = time.perf_counter()
 print(f"{toc - tic:0.4f} seconds")
 
-norm_df.to_csv("output_files/norm_bp_weather.csv", index=False)
+norm_df.to_csv("output_files/norm_bp_weather2.csv", index=False)

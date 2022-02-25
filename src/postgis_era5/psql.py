@@ -1,15 +1,16 @@
-import sqlalchemy
-from sqlalchemy.sql import text
 from typing import List
 
+import sqlalchemy
+from psycopg2 import sql
+from sqlalchemy.sql import text
 from src.postgis_era5.parsing import (
-    parse_daily_weather,
-    parse_daily_weather_norm,
     DailyWeather,
     DailyWeatherNorm,
+    parse_daily_weather,
+    parse_daily_weather_norm,
 )
 from src.postgis_era5.types import WGS84Point
-from psycopg2 import sql
+
 
 class PSQLInterface:
 
@@ -99,11 +100,10 @@ class PSQLInterface:
             STDDEV(ssr_max) AS "ssr_stdev",
             AVG(str_min) AS "str_avg",
             STDDEV(str_min) AS "str_stdev",
-            AVG(nr) AS "tp_avg",
-            STDDEV(nr) AS "tp_stdev"
+            AVG(tp_sum) AS "tp_avg",
+            STDDEV(tp_sum) AS "tp_stdev"
             FROM era5_ecuador 
-            WHERE EXTRACT(MONTH FROM time) = :month
-            
+            WHERE EXTRACT(MONTH FROM time) = :month  
             GROUP BY EXTRACT(DAY FROM time), EXTRACT(MONTH FROM time),  geometry;
             """
             # AND ST_DWithin(geometry, :closest_geo, 0)
@@ -113,7 +113,9 @@ class PSQLInterface:
         return parse_daily_weather_norm(res)
 
     def retrieve_monthly_historical_observations(
-        self, month: int, year: int,
+        self,
+        month: int,
+        year: int,
     ) -> List[DailyWeather]:
         # closest_point = self.get_closest_point(location=location)
         # closest_point = f"SRID=4326;{closest_point}"
@@ -153,7 +155,5 @@ class PSQLInterface:
             # WHERE ST_DWithin(geometry, :closest_geo, 0)
         )
         with self.engine.connect() as conn:
-            res = conn.execute(
-                query, y=month, z=year
-            ).fetchall()
+            res = conn.execute(query, y=month, z=year).fetchall()
         return parse_daily_weather(res)
